@@ -1254,8 +1254,6 @@ console.log(
 
 ---
 
-### TODO: Page mark
-
 ## 11. Prototypes & Inheritance - Advanced
 
 **Code Example:**
