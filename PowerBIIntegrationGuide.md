@@ -659,19 +659,764 @@ logPowerBIAccess(userId, reportId, "report_loaded");
 1. What is Power BI?  
    A) A data visualization tool  
    B) A programming language  
+   C) A database management system  
+   D) A cloud storage service  
    **Answer**: A
+
 2. Which method is used for embedding Power BI reports?  
    A) Using iframes  
-   **Answer**: A
-3. ...
+   B) Using JavaScript API  
+   C) Both A and B  
+   D) Only REST API  
+   **Answer**: C
+
+3. What is the Power BI JavaScript SDK used for?  
+   A) Server-side data processing  
+   B) Programmatic embedding and report interaction  
+   C) Mobile app development  
+   D) Database design  
+   **Answer**: B
+
+4. Which authentication method requires users to have Power BI licenses?  
+   A) Embed tokens  
+   B) Azure AD  
+   C) Service Principal  
+   D) Anonymous access  
+   **Answer**: B
+
+5. What is an embed token in Power BI?  
+   A) A permanent access token  
+   B) A programmatically generated token for embedding reports  
+   C) A user's password  
+   D) A database connection string  
+   **Answer**: B
+
+6. What does RLS stand for in Power BI?  
+   A) Report Level Security  
+   B) Row-Level Security  
+   C) Real-time Live Streaming  
+   D) Remote Login Service  
+   **Answer**: B
+
+7. Which approach is best for multi-tenant SaaS applications?  
+   A) Iframe embedding with Azure AD  
+   B) Service Principal with embed tokens  
+   C) Direct Power BI URL sharing  
+   D) Email-based report distribution  
+   **Answer**: B
+
+8. What is the main advantage of lazy loading reports?  
+   A) Reduced security  
+   B) Faster initial page load  
+   C) More complex code  
+   D) Automatic caching  
+   **Answer**: B
+
+9. When should you use DirectQuery in Power BI?  
+   A) Always, for best performance  
+   B) For small datasets only  
+   C) For real-time data requirements  
+   D) Never, use Import instead  
+   **Answer**: C
+
+10. What is token caching used for?  
+    A) Storing user passwords  
+    B) Reducing authentication server calls  
+    C) Increasing security  
+    D) Improving database connections  
+    **Answer**: B
+
+11. Which setting hides the filter pane in Power BI embed?  
+    A) `navContentPaneEnabled: false`  
+    B) `filterPaneEnabled: false`  
+    C) `paneEnabled: false`  
+    D) `hideFilters: true`  
+    **Answer**: B
+
+12. What is the purpose of Row-Level Security (RLS) in Power BI?  
+    A) To improve report performance  
+    B) To encrypt data  
+    C) To ensure users see only authorized data  
+    D) To reduce file size  
+    **Answer**: C
+
+13. Which HTTP protocol should always be used for Power BI embedding?  
+    A) HTTP  
+    B) FTP  
+    C) HTTPS  
+    D) WebSocket  
+    **Answer**: C
+
+14. What does SSO stand for?  
+    A) Single Sign-Off  
+    B) Single Sign-On  
+    C) Simple Sign-Over  
+    D) Secure Storage Online  
+    **Answer**: B
+
+15. Which React hook is best for managing Power BI state?  
+    A) useState  
+    B) useContext  
+    C) useMemo  
+    D) useReducer  
+    **Answer**: B
+
+16. What is the first step in embedding a Power BI report programmatically?  
+    A) Create an iframe  
+    B) Obtain an access token  
+    C) Register the application  
+    D) Create a React component  
+    **Answer**: B
+
+17. How long are Power BI embed tokens valid for?  
+    A) 5 minutes  
+    B) 1 hour  
+    C) 24 hours  
+    D) Indefinitely  
+    **Answer**: B
+
+18. Which service generates embed tokens?  
+    A) Azure Storage  
+    B) Azure AD  
+    C) Power BI Admin API  
+    D) Microsoft Graph  
+    **Answer**: C
+
+19. What is the main disadvantage of iframe embedding?  
+    A) Poor performance  
+    B) Limited interactivity and filtering  
+    C) Security vulnerabilities  
+    D) Mobile incompatibility  
+    **Answer**: B
+
+20. Which React pattern is recommended for Power BI components?  
+    A) Class components only  
+    B) Functional components with hooks  
+    C) Higher-order components  
+    D) Render props  
+    **Answer**: B
+
+21. What should be stored server-side and never exposed to the client?  
+    A) Report IDs  
+    B) Service principal credentials  
+    C) Workspace IDs  
+    D) User email addresses  
+    **Answer**: B
+
+22. How can you apply filters to a Power BI report programmatically?  
+    A) Using the UI filter panel  
+    B) Using the JavaScript API with filter objects  
+    C) Modifying the Power BI service directly  
+    D) Cannot be done programmatically  
+    **Answer**: B
+
+23. What is the purpose of audit logging in Power BI?  
+    A) To track performance metrics  
+    B) To log all access and interactions for compliance  
+    C) To improve query speed  
+    D) To reduce storage costs  
+    **Answer**: B
+
+24. Which component should be used for embedding Power BI in React?  
+    A) `<iframe>`  
+    B) `<PowerBIReport>` custom component  
+    C) `<div>` only  
+    D) `<embed>`  
+    **Answer**: B
+
+25. What is progressive disclosure in UX?  
+    A) Revealing source code progressively  
+    B) Showing all information initially  
+    C) Revealing detailed controls on demand  
+    D) Gradually reducing page size  
+    **Answer**: C
+
+26. How should you handle Power BI errors in React?  
+    A) Ignore them  
+    B) Display error banner to user  
+    C) Log to console only  
+    D) Refresh the page automatically  
+    **Answer**: B
+
+27. What is the benefit of using CSS media queries for Power BI?  
+    A) Improve data security  
+    B) Make reports responsive to different screen sizes  
+    C) Increase performance  
+    D) Enhance authentication  
+    **Answer**: B
+
+28. Which approach reduces Power BI licensing costs for external users?  
+    A) Azure AD authentication  
+    B) Embed tokens with Service Principal  
+    C) Direct Power BI access  
+    D) No-code approach  
+    **Answer**: B
+
+29. What is the role of `React.lazy()` with Power BI?  
+    A) To enable offline mode  
+    B) To lazy-load reports for better initial load time  
+    C) To cache reports permanently  
+    D) To disable interactivity  
+    **Answer**: B
+
+30. How should sensitive data be handled when embedding Power BI?  
+    A) Send via URL parameters  
+    B) Store in localStorage  
+    C) Validate on server-side and generate secure tokens  
+    D) Display in console logs  
+    **Answer**: C
+
+31. What is the main use case for iframe embedding?  
+    A) Interactive SaaS dashboards  
+    B) Real-time multi-tenant applications  
+    C) Read-only reports for public websites  
+    D) Complex filtering scenarios  
+    **Answer**: C
+
+32. Which authentication method supports conditional access policies?  
+    A) Embed tokens  
+    B) Anonymous access  
+    C) Azure AD  
+    D) Service Principal only  
+    **Answer**: C
+
+33. What should be checked before embedding a report?  
+    A) Server time  
+    B) User authorization  
+    C) Browser cookies  
+    D) DNS records  
+    **Answer**: B
+
+34. How can you optimize initial page load with Power BI?  
+    A) Use larger datasets  
+    B) Implement token caching and lazy loading  
+    C) Increase network latency  
+    D) Use older SDK versions  
+    **Answer**: B
+
+35. What is the purpose of `identities` in embed token generation?  
+    A) To identify the server  
+    B) To map users to RLS roles  
+    C) To track licensing  
+    D) To enable encryption  
+    **Answer**: B
+
+36. Which setting controls the navigation pane visibility?  
+    A) `filterPaneEnabled`  
+    B) `navContentPaneEnabled`  
+    C) `paneVisible`  
+    D) `navigationEnabled`  
+    **Answer**: B
+
+37. What is the recommended frequency for token refresh?  
+    A) Every 5 seconds  
+    B) Every 30 minutes  
+    C) Before expiration (typically 1 hour)  
+    D) Never refresh  
+    **Answer**: C
+
+38. How should you validate user permissions before embedding reports?  
+    A) Trust client-side validation  
+    B) Check permissions on server-side  
+    C) Use Power BI admin portal only  
+    D) No validation needed  
+    **Answer**: B
+
+39. What is the advantage of aggregated tables in Power BI?  
+    A) Reduce security  
+    B) Improve query performance  
+    C) Decrease accuracy  
+    D) Increase file size  
+    **Answer**: B
+
+40. Which approach is best for enterprise internal dashboards?  
+    A) Embed tokens for everyone  
+    B) Share Power BI links directly  
+    C) Azure AD with direct Power BI access  
+    D) Anonymous iframe embedding  
+    **Answer**: C
+
+---
 
 ## 15+ Subjective Q&As with Answers
 
-1. What are the advantages of using Power BI?  
-   **Answer**: Power BI provides interactive visualizations, easy sharing, and integration with various data sources.
-2. How does authentication work in Power BI?  
-   **Answer**: Power BI supports various authentication methods including OAuth2 and Azure AD.
-3. ...
+1. **What are the advantages of using Power BI?**  
+   **Answer**: Power BI offers several key advantages:
+
+   - **Interactive visualizations**: Creates compelling, interactive dashboards and reports
+   - **Easy data integration**: Connects to 200+ data sources seamlessly
+   - **Real-time insights**: Enables live dashboards with automatic data refresh
+   - **Sharing and collaboration**: Easy sharing with colleagues and stakeholders
+   - **Mobile accessibility**: Access reports on any device with responsive design
+   - **Cost-effective**: Competitive pricing with various licensing options
+   - **Enterprise-grade security**: Built-in security, encryption, and compliance features
+   - **Power Query**: Powerful ETL capabilities for data transformation
+
+2. **How does authentication work in Power BI?**  
+   **Answer**: Power BI supports multiple authentication methods:
+
+   **Azure AD (Azure Active Directory):**
+
+   - OAuth 2.0-based authentication
+   - Users log in with organizational credentials
+   - Supports Single Sign-On (SSO)
+   - Enables conditional access policies
+   - Best for enterprise users who have Power BI licenses
+
+   **Embed Tokens (Service Principal):**
+
+   - Application authenticates with Azure AD using service principal
+   - App generates programmatic tokens
+   - Users don't need individual licenses
+   - Better for multi-tenant SaaS applications
+   - Tokens expire after 1 hour
+
+   **Process Flow:**
+
+   1. User initiates access
+   2. Authentication method validates identity
+   3. Access token or embed token is generated
+   4. Token is used to access Power BI resources
+   5. Token is verified on each request
+
+3. **What is the difference between iframe embedding and JavaScript API embedding?**  
+   **Answer**:
+
+   **Iframe Embedding:**
+
+   - Uses HTML iframe element pointing to Power BI URL
+   - **Pros**: Simple implementation, no external dependencies, works across domains
+   - **Cons**: Limited interactivity, cannot apply filters programmatically, limited event handling
+   - **Use case**: Read-only reports for public websites
+
+   **JavaScript API Embedding:**
+
+   - Uses Power BI JavaScript SDK for programmatic control
+   - **Pros**: Full control over interactivity, dynamic filtering, event handling, customization
+   - **Cons**: More complex setup, requires token management, additional dependencies
+   - **Use case**: SaaS applications with dynamic filtering and user-specific data
+
+   **Comparison Table:**
+
+   - Complexity: Iframe (simple) vs API (complex)
+   - Interactivity: Iframe (limited) vs API (full)
+   - Filtering: Iframe (pre-built) vs API (programmatic)
+   - Performance: Both similar
+
+4. **How do you implement Row-Level Security (RLS) in Power BI?**  
+   **Answer**: Row-Level Security ensures users see only authorized data:
+
+   **Steps:**
+
+   1. Define RLS roles in Power BI Desktop
+   2. Create DAX formulas to filter rows based on role
+   3. Assign users to roles
+   4. Include role information in embed tokens
+
+   **Example:**
+
+   ```
+   Create role "Sales_North" with DAX filter:
+   [Region] = "North"
+
+   Include in token:
+   identities: [{
+     username: "john@company.com",
+     roles: ["Sales_North"]
+   }]
+   ```
+
+   **Best practices:**
+
+   - Define roles based on organizational structure
+   - Test RLS thoroughly before production
+   - Monitor role assignments for compliance
+   - Use dynamic RLS for large organizations
+
+5. **What is the best approach for embedding Power BI in a React application?**  
+   **Answer**: Best practices for React Power BI integration:
+
+   **1. Create reusable components:**
+
+   - Build custom `<PowerBIReport>` component wrapping SDK
+   - Accept embedUrl, reportId, accessToken as props
+   - Handle loading and error states
+
+   **2. Use React hooks:**
+
+   - `useState` for loading/error states
+   - `useEffect` for initialization and cleanup
+   - `useContext` for global Power BI configuration
+
+   **3. Implement token management:**
+
+   - Fetch token from server API
+   - Cache tokens to avoid repeated calls
+   - Refresh before expiration
+
+   **4. Error handling:**
+
+   - Listen to Power BI "error" events
+   - Display user-friendly error messages
+   - Log errors for debugging
+
+   **5. Performance optimization:**
+
+   - Lazy load reports with `React.lazy()`
+   - Memoize components with `React.memo()`
+   - Implement token caching
+
+6. **What security measures should be implemented when embedding Power BI?**  
+   **Answer**: Essential security measures:
+
+   **1. Token Management:**
+
+   - Generate tokens on server-side only
+   - Never expose service principal credentials
+   - Implement token expiration (1 hour)
+   - Refresh tokens before expiration
+
+   **2. HTTPS Only:**
+
+   - Always use secure HTTPS connections
+   - Never use HTTP for production
+
+   **3. Authorization:**
+
+   - Validate user permissions server-side
+   - Implement Row-Level Security for data isolation
+   - Check licensing and access rights
+
+   **4. Audit Logging:**
+
+   - Log all Power BI access attempts
+   - Track user actions and report views
+   - Monitor for suspicious activity
+   - Maintain compliance records
+
+   **5. Data Protection:**
+
+   - Use encryption for sensitive data
+   - Implement conditional access policies
+   - Set up data loss prevention (DLP)
+
+   **6. Network Security:**
+
+   - Restrict IP ranges if possible
+   - Use VPN for internal access
+   - Implement web application firewall (WAF)
+
+7. **How do you optimize Power BI performance in a web application?**  
+   **Answer**: Performance optimization strategies:
+
+   **1. Token Caching:**
+
+   - Cache access tokens to reduce server calls
+   - Refresh only before expiration
+   - Save 50-70% server load
+
+   **2. Lazy Loading:**
+
+   - Load reports only when user requests them
+   - Use React.lazy() for code splitting
+   - Reduces initial page load time by 30-40%
+
+   **3. Data Model Optimization:**
+
+   - Use aggregated/summary tables for dashboards
+   - Create appropriate indexes
+   - Implement incremental refresh for large datasets
+
+   **4. Query Performance:**
+
+   - Use DirectQuery only for real-time data
+   - Use Import mode for better performance
+   - Optimize DAX formulas
+
+   **5. Network Optimization:**
+
+   - Compress responses with gzip
+   - Implement CDN for static assets
+   - Optimize image sizes
+
+   **6. Client-side Optimization:**
+
+   - Implement pagination for large datasets
+   - Cache filter results
+   - Minimize DOM re-renders
+
+8. **What is progressive disclosure in Power BI UX?**  
+   **Answer**: Progressive disclosure reveals information gradually to improve user experience:
+
+   **Concept:**
+
+   - Show essential information initially
+   - Reveal advanced features on demand
+   - Reduce cognitive load for casual users
+   - Enable power users to access advanced controls
+
+   **Implementation:**
+
+   - Hide filter pane by default: `filterPaneEnabled: false`
+   - Hide navigation pane: `navContentPaneEnabled: false`
+   - Show "Show Filters" button
+   - Toggle visibility on button click
+
+   **Benefits:**
+
+   - Cleaner interface for basic users
+   - Advanced controls available for experts
+   - Improved user satisfaction
+   - Reduced training requirements
+
+   **Example UX Flow:**
+
+   1. User sees clean dashboard with main visualization
+   2. User clicks "Show Filters" button
+   3. Advanced filter panel appears
+   4. User applies filters and explores data
+
+9. **How do you handle loading states and errors in Power BI embedding?**  
+   **Answer**: Proper error handling improves user experience:
+
+   **Loading States:**
+
+   - Show spinner while report loads
+   - Display loading message
+   - Disable interactions during load
+
+   **Error Handling:**
+
+   - Listen to "error" events from Power BI SDK
+   - Display user-friendly error messages
+   - Log detailed errors for debugging
+   - Provide recovery options
+
+   **Implementation:**
+
+   ```
+   1. Show loading spinner on mount
+   2. Listen to "loaded" event → hide spinner
+   3. Listen to "error" event → show error message
+   4. Provide "Retry" button
+   5. Log errors with timestamp and user info
+   ```
+
+   **Error Types:**
+
+   - Network errors → Retry or offline mode
+   - Authentication errors → Re-authenticate
+   - Permission errors → Contact admin
+   - Configuration errors → Check setup
+
+10. **What are the key differences between Power BI Service and Power BI Desktop?**  
+    **Answer**: Understanding these products is essential:
+
+    **Power BI Desktop:**
+
+    - Standalone application for Windows
+    - Used for creating and designing reports
+    - Connects to data sources
+    - Creates data models
+    - Designs visualizations
+    - Not for sharing/publishing
+
+    **Power BI Service (Online):**
+
+    - Cloud-based platform
+    - Used for sharing and collaboration
+    - Publish reports from Desktop to Service
+    - Create dashboards
+    - Share with team members
+    - Set up automatic data refresh
+    - Manage security and licensing
+
+    **Power BI Mobile:**
+
+    - Mobile app for iOS/Android
+    - View reports and dashboards
+    - Mobile-optimized interface
+    - Offline viewing capability
+
+    **Typical Workflow:**
+
+    1. Desktop: Connect to data, design report
+    2. Publish to Service
+    3. Service: Share, set security, refresh
+    4. Mobile: Access on the go
+
+11. **How do you implement Row-Level Security for a multi-tenant SaaS application?**  
+    **Answer**: Multi-tenant RLS strategy:
+
+    **Architecture:**
+
+    - Single Power BI workspace for all customers
+    - Service Principal generates tokens
+    - RLS roles per customer
+    - Dynamic role assignment
+
+    **Implementation Steps:**
+
+    1. Create RLS roles in Power BI Desktop:
+
+       - Role "Customer_A"
+       - Role "Customer_B"
+       - DAX filters: `[CustomerID] = "A"`
+
+    2. Generate tokens with user identity:
+       ```
+       identities: [{
+         username: "user@customerA.com",
+         roles: ["Customer_A"]
+       }]
+       ```
+
+    **Advantages:**
+
+    - Cost-effective (one Power BI premium capacity)
+    - Scalable for many customers
+    - Data isolation guaranteed
+    - Consistent experience across customers
+
+12. **What are the best practices for Power BI project structure?**  
+    **Answer**: Organizing Power BI effectively:
+
+    **Workspace Organization:**
+
+    - Create separate workspaces for dev/test/prod
+    - One workspace per major business area
+    - Organize by department or function
+
+    **Report Organization:**
+
+    - Group related reports in workspaces
+    - Use consistent naming conventions
+    - Document report purpose and dependencies
+
+    **Data Model Best Practices:**
+
+    - Create star schema (fact + dimensions)
+    - Hide technical columns from users
+    - Use relationships appropriately
+    - Create user-friendly column names
+
+    **Refresh Strategy:**
+
+    - Production data: refresh during off-peak hours
+    - Development: refresh less frequently
+    - Use incremental refresh for large datasets
+    - Monitor refresh performance
+
+    **Governance:**
+
+    - Control who can create reports
+    - Set naming standards
+    - Document all calculations
+    - Maintain data dictionary
+
+13. **How do you troubleshoot Power BI embedding issues?**  
+    **Answer**: Common troubleshooting steps:
+
+    **Token Issues:**
+
+    - Verify token generation succeeds
+    - Check token expiration
+    - Ensure workspace/report IDs are correct
+    - Validate token permissions
+
+    **Embedding Issues:**
+
+    - Check browser console for errors
+    - Verify container element exists and is visible
+    - Ensure SDK is properly loaded
+    - Check CORS settings for iframe
+
+    **Authentication Issues:**
+
+    - Verify Azure AD credentials
+    - Check service principal permissions
+    - Validate user roles and licenses
+    - Test with different accounts
+
+    **Data Issues:**
+
+    - Verify data source connectivity
+    - Check data refresh status
+    - Validate RLS configuration
+    - Monitor query performance
+
+    **Tools for Debugging:**
+
+    - Browser DevTools (Network, Console)
+    - Power BI Admin Portal
+    - Azure AD audit logs
+    - Application Insights
+
+14. **What metrics should be monitored for Power BI performance?**  
+    **Answer**: Key performance indicators:
+
+    **User Experience:**
+
+    - Page load time (target: <2 seconds)
+    - Report rendering time (target: <3 seconds)
+    - Filter application time (target: <1 second)
+    - Time to first interaction
+
+    **Infrastructure:**
+
+    - Premium capacity usage (target: <70%)
+    - Query execution time
+    - Data refresh duration
+    - Concurrent user limit
+
+    **Business Metrics:**
+
+    - User adoption rate
+    - Report usage frequency
+    - Active users per day
+    - Feature usage patterns
+
+    **Security & Compliance:**
+
+    - Failed authentication attempts
+    - Unauthorized access attempts
+    - Token refresh rate
+    - Audit log events
+
+    **Monitoring Tools:**
+
+    - Power BI Admin Portal
+    - Application Insights
+    - Azure Monitor
+    - Custom dashboards
+
+15. **What is the future roadmap of Power BI and key upcoming features?**  
+    **Answer**: Evolution of Power BI platform:
+
+    **Recent Innovations:**
+
+    - Power BI with Copilot (AI-powered insights)
+    - Paginated reports for formatted output
+    - Real-time dashboards
+    - Dataflows for self-service ETL
+    - Composite models
+
+    **Upcoming Focus Areas:**
+
+    - Enhanced AI/ML capabilities
+    - Better mobile experience
+    - Improved performance and scalability
+    - Expanded data source support
+    - Advanced security and governance
+    - Better developer experiences and APIs
+
+    **Industry Trends:**
+
+    - Shift to embedded analytics
+    - Increased demand for real-time insights
+    - Integration with other Microsoft services
+    - Expansion of no-code/low-code solutions
+    - Focus on data governance and compliance
 
 ## Code Examples for Real-World Implementation
 
