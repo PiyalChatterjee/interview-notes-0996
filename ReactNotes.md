@@ -16,7 +16,8 @@
 6. [Part 6: Testing React](#part-6-testing-react)
 7. [Part 7: 30+ MCQs](#part-7-30-mcqs)
 8. [Part 8: 10+ Subjective Q&A](#part-8-10-subjective-qa)
-9. [TLDR Summary](#tldr-summary)
+9. [Real-Life Scenario-Based Questions](#-real-life-scenario-based-questions)
+10. [TLDR Summary](#tldr-summary)
 
 ---
 
@@ -1494,6 +1495,438 @@ function Header() {
     </header>
   );
 }
+```
+
+### ⚠️ Context API Pitfalls & Solutions
+
+#### Pitfall 1: Unnecessary Re-renders (Most Common)
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: All consumers re-render when ANY value changes
+function BadProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState("light");
+  const [notifications, setNotifications] = useState([]);
+
+  // Value object is recreated on every render
+  // Even if just user changed, theme consumers also re-render!
+  const value = {
+    user,
+    setUser,
+    theme,
+    setTheme,
+    notifications,
+    setNotifications,
+  };
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+// Component consuming only theme still re-renders when user changes
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(AppContext); // Re-renders on ANY change
+  return <button onClick={() => setTheme("dark")}>Toggle</button>;
+}
+```
+
+**Solution 1: Split Contexts by Change Frequency**
+
+```jsx
+// ✅ SOLUTION: Separate contexts by update frequency
+const UserContext = createContext();
+const ThemeContext = createContext();
+const NotificationContext = createContext();
+
+function AppProviders({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState("light");
+  const [notifications, setNotifications] = useState([]);
+
+  // Each context has its own Provider
+  // Theme consumers only re-render when theme changes
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      <ThemeContext.Provider value={{ theme, setTheme }}>
+        <NotificationContext.Provider
+          value={{ notifications, setNotifications }}
+        >
+          {children}
+        </NotificationContext.Provider>
+      </ThemeContext.Provider>
+    </UserContext.Provider>
+  );
+}
+
+// ✅ Now only theme changes trigger theme consumer re-renders
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(ThemeContext);
+  return <button onClick={() => setTheme("dark")}>Toggle</button>;
+}
+```
+
+**Solution 2: Memoize Context Value**
+
+```jsx
+// ✅ SOLUTION: Use useMemo to prevent unnecessary recreations
+import { useMemo, useCallback } from "react";
+
+function OptimizedProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState("light");
+
+  // Memoize the value object - only recreate when dependencies change
+  const userValue = useMemo(() => ({ user, setUser }), [user]);
+  const themeValue = useMemo(() => ({ theme, setTheme }), [theme]);
+
+  return (
+    <UserContext.Provider value={userValue}>
+      <ThemeContext.Provider value={themeValue}>
+        {children}
+      </ThemeContext.Provider>
+    </UserContext.Provider>
+  );
+}
+
+// ✅ Use useCallback for stable function references
+function AdvancedProvider({ children }) {
+  const [state, setState] = useState({
+    user: null,
+    theme: "light",
+    notifications: [],
+  });
+
+  const updateUser = useCallback((user) => {
+    setState((prev) => ({ ...prev, user }));
+  }, []);
+
+  const updateTheme = useCallback((theme) => {
+    setState((prev) => ({ ...prev, theme }));
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      user: state.user,
+      updateUser,
+      theme: state.theme,
+      updateTheme,
+    }),
+    [state.user, state.theme, updateUser, updateTheme]
+  );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+```
+
+#### Pitfall 2: Context Value Object Recreation
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: Inline objects recreated every render
+function BadProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  // NEW object every render, even if user didn't change!
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+// All consumers re-render because {} !== {} (object reference changed)
+```
+
+**Solution:**
+
+```jsx
+// ✅ SOLUTION: Memoize the context value
+function GoodProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  const value = useMemo(() => ({ user, setUser }), [user]);
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+}
+```
+
+#### Pitfall 3: Using Context for Frequently Changing State
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: Using context for high-frequency updates
+function FormProvider({ children }) {
+  const [formData, setFormData] = useState({ name: "", email: "", age: "" });
+
+  // User types → state updates → all consumers re-render
+  // Typing in input field causes 60+ re-renders per second!
+  // If this context is used in 100s of form fields, performance tanks
+
+  return (
+    <FormContext.Provider value={{ formData, setFormData }}>
+      {children}
+    </FormContext.Provider>
+  );
+}
+```
+
+**Solution:**
+
+```jsx
+// ✅ SOLUTION: Use local state for frequently changing data
+function Form() {
+  const [formData, setFormData] = useState({ name: "", email: "" });
+
+  // Local state - only this component re-renders
+  // Use context only to submit/share final data
+  const { saveFormData } = useFormContext();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    saveFormData(formData); // Only share when needed
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="name" value={formData.name} onChange={handleChange} />
+      <button type="submit">Save</button>
+    </form>
+  );
+}
+```
+
+#### Pitfall 4: Not Splitting Dispatchers and Data
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: Mixed data and setters in single context
+function BadProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState("light");
+
+  // Even if consumer only calls setTheme,
+  // it still re-renders when user changes
+  return (
+    <AppContext.Provider value={{ user, setUser, theme, setTheme }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+```
+
+**Solution:**
+
+```jsx
+// ✅ SOLUTION: Separate data from dispatchers
+const UserDataContext = createContext();
+const UserDispatchContext = createContext();
+const ThemeDataContext = createContext();
+const ThemeDispatchContext = createContext();
+
+function Provider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState("light");
+
+  return (
+    <UserDataContext.Provider value={user}>
+      <UserDispatchContext.Provider value={setUser}>
+        <ThemeDataContext.Provider value={theme}>
+          <ThemeDispatchContext.Provider value={setTheme}>
+            {children}
+          </ThemeDispatchContext.Provider>
+        </ThemeDataContext.Provider>
+      </UserDispatchContext.Provider>
+    </UserDataContext.Provider>
+  );
+}
+
+// Component only re-renders when using data it subscribes to
+function ThemeToggle() {
+  const theme = useContext(ThemeDataContext);
+  const setTheme = useContext(ThemeDispatchContext);
+  // Only re-renders when theme changes
+  return <button onClick={() => setTheme("dark")}>Toggle</button>;
+}
+```
+
+#### Pitfall 5: Missing Provider Checks
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: No check if context provider exists
+function useAuth() {
+  return useContext(AuthContext); // Crashes if outside provider!
+}
+
+// App renders UserProfile without AuthProvider
+function App() {
+  return <UserProfile />; // Error: Cannot read property 'user' of undefined
+}
+```
+
+**Solution:**
+
+```jsx
+// ✅ SOLUTION: Always validate context in custom hooks
+function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (context === undefined) {
+    throw new Error(
+      "useAuth must be used within an AuthProvider. " +
+        "Did you forget to wrap your app with <AuthProvider>?"
+    );
+  }
+
+  return context;
+}
+
+// ✅ Even better: Create a wrapper component
+function withAuthProvider(Component) {
+  return function ProtectedComponent(props) {
+    return (
+      <AuthProvider>
+        <Component {...props} />
+      </AuthProvider>
+    );
+  };
+}
+
+const ProtectedApp = withAuthProvider(App);
+```
+
+#### Pitfall 6: Context as Replacement for State Management
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: Using context for complex app state
+// When you have:
+// - 100+ state variables
+// - Complex update logic
+// - Multiple interdependent states
+// - Need for time-travel debugging
+
+function AppProvider({ children }) {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+  // Simple context can't handle this well
+  return (
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+```
+
+**Solution:**
+
+```jsx
+// ✅ SOLUTION: Use Redux, Zustand, or Recoil for complex state
+// Context is for sharing simple, static data
+// Redux is for complex, interconnected state
+
+// Use context for:
+// - Theme, Language, Notifications
+// - User authentication (relatively stable)
+
+// Use Redux/Zustand for:
+// - Complex business logic
+// - Multiple interconnected states
+// - Need for debugging/devtools
+// - Large scale applications
+
+// Example: Use both together
+function App() {
+  return (
+    <ReduxProvider store={store}>
+      <ThemeProvider>
+        <AuthProvider>
+          <MainApp />
+        </AuthProvider>
+      </ThemeProvider>
+    </ReduxProvider>
+  );
+}
+```
+
+#### Pitfall 7: Memory Leaks with Listeners
+
+**Problem:**
+
+```jsx
+// ❌ ANTI-PATTERN: Not cleaning up event listeners
+function NotificationProvider({ children }) {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      setNotifications((prev) => [...prev, event.data]);
+    };
+
+    // Subscribe but never unsubscribe!
+    window.addEventListener("message", handleMessage);
+
+    // Missing cleanup - listener stays in memory
+  }, []);
+
+  return (
+    <NotificationContext.Provider value={notifications}>
+      {children}
+    </NotificationContext.Provider>
+  );
+}
+```
+
+**Solution:**
+
+```jsx
+// ✅ SOLUTION: Always clean up in useEffect
+function NotificationProvider({ children }) {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      setNotifications((prev) => [...prev, event.data]);
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
+  return (
+    <NotificationContext.Provider value={notifications}>
+      {children}
+    </NotificationContext.Provider>
+  );
+}
+```
+
+### Summary of Context Pitfalls:
+
+| Pitfall                    | Impact        | Solution                              |
+| -------------------------- | ------------- | ------------------------------------- |
+| **No Value Memoization**   | Re-renders    | Use `useMemo` for context value       |
+| **Single Mixed Context**   | Re-renders    | Split contexts by change frequency    |
+| **High-frequency Updates** | Performance   | Use local state + context for sharing |
+| **Data & Setters Mixed**   | Re-renders    | Separate data and dispatch contexts   |
+| **Missing Provider Check** | Runtime error | Validate context in custom hooks      |
+| **Complex State Logic**    | Maintenance   | Use Redux/Zustand instead             |
+| **No Cleanup**             | Memory leaks  | Clean up listeners in useEffect       |
+
+```
+
 ```
 
 ## 3. useReducer - Advanced State Management
@@ -5671,66 +6104,6 @@ const UserContext = createContext();
 
 // Redux: Complex app-wide state management
 // For very large apps with complex state logic
-```
-
-### Important: Context Performance Considerations
-
-```jsx
-// ⚠️ PROBLEM: All consumers re-render on any value change
-function BadProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [theme, setTheme] = useState("light");
-
-  // Value object is recreated on every render
-  const value = {
-    user,
-    setUser,
-    theme,
-    setTheme,
-  };
-
-  return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
-}
-
-// ✅ SOLUTION: Memoize the value
-import { useMemo } from "react";
-
-function GoodProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [theme, setTheme] = useState("light");
-
-  const value = useMemo(
-    () => ({
-      user,
-      setUser,
-      theme,
-      setTheme,
-    }),
-    [user, theme]
-  );
-
-  return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
-}
-
-// ✅ BETTER: Separate contexts by change frequency
-const UserContext = createContext();
-const ThemeContext = createContext();
-
-function Provider({ children }) {
-  const [user, setUser] = useState(null);
-  const [theme, setTheme] = useState("light");
-
-  const userValue = useMemo(() => ({ user, setUser }), [user]);
-  const themeValue = useMemo(() => ({ theme, setTheme }), [theme]);
-
-  return (
-    <UserContext.Provider value={userValue}>
-      <ThemeContext.Provider value={themeValue}>
-        {children}
-      </ThemeContext.Provider>
-    </UserContext.Provider>
-  );
-}
 ```
 
 ### Best Practices:
@@ -11559,6 +11932,513 @@ function WithCleanup() {
 // If useLayoutEffect > 1ms, consider if useEffect works
 // Most measurement code can be optimized to useEffect
 ```
+
+---
+
+## 🎯 Real-Life Scenario-Based Questions
+
+### Scenario 1: Context API Performance Issue in E-Commerce App
+
+**Scenario:**
+You're building an e-commerce app with Context API. You created an AppContext that holds:
+
+- User authentication state (rarely changes)
+- Shopping cart (updates on every add/remove)
+- Product filters (updates frequently during search)
+- Theme preference (rarely changes)
+
+You notice that when a user adds an item to the cart, ALL components re-render, causing performance issues. The product list component re-renders unnecessarily, even though it's not displaying cart data.
+
+**Problem:**
+
+- All consumers re-render on any state change
+- Shopping cart updates cause entire app re-render
+- Product filtering causes performance lag
+
+**Interview Question:**
+"How would you restructure this Context to avoid unnecessary re-renders?"
+
+**Solution Approach:**
+
+```jsx
+// ❌ BEFORE: Single context with mixed data
+const AppContext = createContext();
+
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [theme, setTheme] = useState("light");
+
+  // All consumers re-render when ANY state changes
+  const value = {
+    user,
+    setUser,
+    cart,
+    setCart,
+    filters,
+    setFilters,
+    theme,
+    setTheme,
+  };
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+// ✅ AFTER: Separate contexts by update frequency
+const UserContext = createContext();
+const CartContext = createContext();
+const FilterContext = createContext();
+const ThemeContext = createContext();
+
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [theme, setTheme] = useState("light");
+
+  const userValue = useMemo(() => ({ user, setUser }), [user]);
+  const cartValue = useMemo(() => ({ cart, setCart }), [cart]);
+  const filterValue = useMemo(() => ({ filters, setFilters }), [filters]);
+  const themeValue = useMemo(() => ({ theme, setTheme }), [theme]);
+
+  return (
+    <UserContext.Provider value={userValue}>
+      <CartContext.Provider value={cartValue}>
+        <FilterContext.Provider value={filterValue}>
+          <ThemeContext.Provider value={themeValue}>
+            {children}
+          </ThemeContext.Provider>
+        </FilterContext.Provider>
+      </CartContext.Provider>
+    </UserContext.Provider>
+  );
+}
+
+// ProductList only re-renders when filters change, not when cart updates
+function ProductList() {
+  const { filters } = useContext(FilterContext);
+  // Only re-renders when filters change ✅
+  return <div>Products...</div>;
+}
+```
+
+**Key Takeaway:** Split contexts by update frequency to minimize unnecessary re-renders.
+
+---
+
+### Scenario 2: Authentication Context in Multi-Tab Application
+
+**Scenario:**
+Your app allows users to log in. User opens your app in two browser tabs. In Tab 1, the user logs out. You expect Tab 2 to also show the logged-out state, but it doesn't sync. Tab 2 still shows the user as logged in.
+
+**Problem:**
+
+- Context is per app instance, not synced across browser tabs
+- localStorage changes aren't automatically reflected in context
+- User sees inconsistent state across tabs
+
+**Interview Question:**
+"How would you keep authentication state in sync across browser tabs?"
+
+**Solution Approach:**
+
+```jsx
+// ✅ SOLUTION: Use storage events to sync across tabs
+const AuthContext = createContext();
+
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // Listen for storage changes from other tabs
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "user") {
+        if (e.newValue) {
+          setUser(JSON.parse(e.newValue));
+          setIsAuthenticated(true);
+        } else {
+          // User logged out in another tab
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const login = async (credentials) => {
+    const userData = await api.login(credentials);
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
+  const logout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem("user");
+    // This triggers storage event in other tabs automatically
+  };
+
+  const value = { user, isAuthenticated, login, logout };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+```
+
+**Key Takeaway:** Use storage events (storage API) to sync context across browser tabs.
+
+---
+
+### Scenario 3: Form Context with Nested Components
+
+**Scenario:**
+You have a multi-step form with nested components:
+
+- FormContainer (holds form state)
+  - PersonalInfoStep (updates name, email)
+  - AddressStep (updates address)
+  - ReviewStep (displays all data)
+
+You want to use Context to avoid prop drilling 5 levels deep. But now when user types in PersonalInfoStep, AddressStep also re-renders (even though it's not visible yet).
+
+**Problem:**
+
+- Form context value changes frequently (on every keystroke)
+- All form steps re-render on any field change
+- Performance degrades with many form fields
+
+**Interview Question:**
+"How would you optimize this form context to prevent unnecessary re-renders of non-visible steps?"
+
+**Solution Approach:**
+
+```jsx
+// ✅ SOLUTION 1: Separate data and dispatch contexts
+const FormDataContext = createContext();
+const FormDispatchContext = createContext();
+
+function FormProvider({ children }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    address: "",
+    city: "",
+  });
+
+  const updateField = useCallback((field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  // Data context - consumers of this re-render on data change
+  const dataValue = useMemo(() => ({ ...formData }), [formData]);
+
+  // Dispatch context - stable function reference
+  const dispatchValue = useMemo(() => ({ updateField }), [updateField]);
+
+  return (
+    <FormDataContext.Provider value={dataValue}>
+      <FormDispatchContext.Provider value={dispatchValue}>
+        {children}
+      </FormDispatchContext.Provider>
+    </FormDataContext.Provider>
+  );
+}
+
+// ReviewStep only subscribes to data
+function ReviewStep() {
+  const data = useContext(FormDataContext); // Re-renders on data change
+  return <div>Review: {data.name}</div>;
+}
+
+// PersonalInfoStep only needs dispatch
+function PersonalInfoStep() {
+  const { updateField } = useContext(FormDispatchContext); // Never re-renders from data updates
+  return (
+    <input
+      onChange={(e) => updateField("name", e.target.value)}
+      placeholder="Name"
+    />
+  );
+}
+
+// ✅ SOLUTION 2: Use reducer pattern for batch updates
+const FormContext = createContext();
+
+function FormProvider({ children }) {
+  const initialState = { name: "", email: "", address: "", city: "" };
+
+  const formReducer = useCallback((state, action) => {
+    switch (action.type) {
+      case "UPDATE_FIELD":
+        return { ...state, [action.field]: action.value };
+      case "RESET":
+        return initialState;
+      default:
+        return state;
+    }
+  }, []);
+
+  const [formData, dispatch] = useReducer(formReducer, initialState);
+
+  // Memoize to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({
+      formData,
+      updateField: (field, value) => {
+        dispatch({ type: "UPDATE_FIELD", field, value });
+      },
+      reset: () => dispatch({ type: "RESET" }),
+    }),
+    [formData]
+  );
+
+  return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
+}
+```
+
+**Key Takeaway:** Use separate dispatch context for stable function references and reduce data context re-renders.
+
+---
+
+### Scenario 4: Theme Context with LocalStorage Persistence
+
+**Scenario:**
+You implement a theme switcher using Context. User changes theme to dark mode. The page refreshes and theme reverts to light mode because context is reset on page reload.
+
+**Problem:**
+
+- Context state is lost on page refresh
+- User preference not persisted
+- Poor user experience
+
+**Interview Question:**
+"How would you persist theme preference and restore it after page refresh?"
+
+**Solution Approach:**
+
+```jsx
+// ✅ SOLUTION: Persist theme to localStorage and restore on mount
+const ThemeContext = createContext();
+
+function ThemeProvider({ children }) {
+  // Initialize from localStorage
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    return savedTheme || "light";
+  });
+
+  // Save theme to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    // Also update document root for global CSS
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  }, []);
+
+  const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
+}
+
+// CSS to respond to theme attribute
+// :root[data-theme="dark"] { --bg-color: #333; }
+// :root[data-theme="light"] { --bg-color: #fff; }
+```
+
+**Key Takeaway:** Combine useState with useEffect and localStorage for persistent theme management.
+
+---
+
+### Scenario 5: Accessing Context Outside React Components
+
+**Scenario:**
+You have a logging utility that needs to access the current user from AuthContext to log which user performed an action. But logging utility is a plain JavaScript file, not a React component, so you can't use useContext.
+
+**Problem:**
+
+- Can't use hooks outside React components
+- useContext() only works in components
+- Need context value in utility functions
+
+**Interview Question:**
+"How would you access context values from non-component code?"
+
+**Solution Approach:**
+
+```jsx
+// ✅ SOLUTION 1: Create a ref-based context subscriber
+const AuthContext = createContext();
+let currentAuthContext = null;
+
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Update ref whenever user changes
+    currentAuthContext = { user, setUser };
+  }, [user]);
+
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// Utility file - can access current context
+export function logAction(action) {
+  if (currentAuthContext?.user) {
+    console.log(`${currentAuthContext.user.name} performed: ${action}`);
+  } else {
+    console.log(`Anonymous user performed: ${action}`);
+  }
+}
+
+// ✅ SOLUTION 2: Use context subscription pattern
+class ContextSubscriber {
+  static subscribers = {};
+
+  static subscribe(contextName, callback) {
+    if (!this.subscribers[contextName]) {
+      this.subscribers[contextName] = [];
+    }
+    this.subscribers[contextName].push(callback);
+
+    return () => {
+      this.subscribers[contextName] = this.subscribers[contextName].filter(
+        (cb) => cb !== callback
+      );
+    };
+  }
+
+  static notify(contextName, value) {
+    if (this.subscribers[contextName]) {
+      this.subscribers[contextName].forEach((cb) => cb(value));
+    }
+  }
+}
+
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Notify all subscribers when user changes
+    ContextSubscriber.notify("auth", { user, setUser });
+  }, [user]);
+
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// Utility can subscribe
+export function setupLogging() {
+  ContextSubscriber.subscribe("auth", ({ user }) => {
+    window.currentUser = user;
+  });
+}
+```
+
+**Key Takeaway:** For non-component code, use a ref or subscriber pattern to access context values.
+
+---
+
+### Scenario 6: Dynamic Context Creation
+
+**Scenario:**
+Your app supports multiple workspaces. Each workspace has its own context for workspace settings, team members, etc. You can't create context ahead of time because workspaces are dynamic.
+
+**Problem:**
+
+- Can't know all contexts in advance
+- Need to create contexts dynamically per workspace
+- How to efficiently manage multiple contexts?
+
+**Interview Question:**
+"How would you handle dynamic context creation for multiple workspaces?"
+
+**Solution Approach:**
+
+```jsx
+// ✅ SOLUTION: Context factory pattern
+const workspaceContexts = {}; // Cache for created contexts
+
+function getWorkspaceContext(workspaceId) {
+  if (!workspaceContexts[workspaceId]) {
+    workspaceContexts[workspaceId] = createContext();
+  }
+  return workspaceContexts[workspaceId];
+}
+
+function WorkspaceProvider({ workspaceId, children }) {
+  const [settings, setSettings] = useState(null);
+  const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    // Fetch workspace data
+    fetchWorkspace(workspaceId).then((data) => {
+      setSettings(data.settings);
+      setMembers(data.members);
+    });
+  }, [workspaceId]);
+
+  const WorkspaceContext = getWorkspaceContext(workspaceId);
+  const value = useMemo(() => ({ settings, members }), [settings, members]);
+
+  return (
+    <WorkspaceContext.Provider value={value}>
+      {children}
+    </WorkspaceContext.Provider>
+  );
+}
+
+function useWorkspace(workspaceId) {
+  const WorkspaceContext = getWorkspaceContext(workspaceId);
+  const context = useContext(WorkspaceContext);
+
+  if (!context) {
+    throw new Error(
+      `Workspace ${workspaceId} not found. Ensure it's wrapped in WorkspaceProvider.`
+    );
+  }
+
+  return context;
+}
+
+// Usage
+function WorkspaceSettings() {
+  const workspaceId = useParams().workspaceId;
+  const { settings } = useWorkspace(workspaceId);
+
+  return <div>Settings: {settings.name}</div>;
+}
+```
+
+**Key Takeaway:** Use a factory pattern with caching to manage multiple dynamic contexts.
 
 ---
 
