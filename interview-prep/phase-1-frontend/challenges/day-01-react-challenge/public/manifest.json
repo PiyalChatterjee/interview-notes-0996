@@ -1,0 +1,26 @@
+{
+  "name": "Azure Full Stack Interview Prep — Day 1 Challenge",
+  "short_name": "InterviewApp",
+  "description": "PWA scaffold for Day 1 React 18/19 concurrent rendering challenge",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0078d4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": []
+}
