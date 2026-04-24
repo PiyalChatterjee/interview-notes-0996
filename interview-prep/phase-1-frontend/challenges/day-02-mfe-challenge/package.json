@@ -1,0 +1,14 @@
+{
+  "name": "day-02-mfe-challenge",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix remote-products run serve:federation\" \"npm --prefix host run dev\"",
+    "dev:host": "npm --prefix host run dev",
+    "dev:remote": "npm --prefix remote-products run serve:federation",
+    "build": "npm --prefix remote-products run build && npm --prefix host run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

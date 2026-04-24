@@ -1,0 +1,15 @@
+# Root-level dependencies for day-02-mfe-challenge
+node_modules/
+
+# Build output
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
