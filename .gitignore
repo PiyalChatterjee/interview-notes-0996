@@ -1,0 +1,45 @@
+# .NET
+bin/
+obj/
+*.csproj.user
+*.dll
+*.exe
+*.pdb
+.vs/
+.vscode/
+
+# Azure Functions
+.azurefunctions/
+.funcignore
+local.settings.json
+
+# Azurite (local storage emulator)
+__azurite_db_*.json
+__azurite_db_*_extent__.json
+__blobstorage__/
+__queuestorage__/
+__tablestorage__/
+AzuriteConfig
+
+# Environment
+.env
+.env.*.local
+.env.ps1
+
+# Node
+node_modules/
+package-lock.json
+npm-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/

@@ -1,0 +1,35 @@
+## Binaries and related files
+bin/
+obj/
+.vs/
+.vscode/
+*.suo
+*.user
+*.cache
+
+## Azure Functions
+local.settings.json
+host.json
+*.trx
+
+## Node and npm
+node_modules/
+package-lock.json
+npm-debug.log
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Editor
+*.swp
+*.swo
+*~
+.idea/
+
+## Build outputs
+dist/
+build/
+
+## Azurite storage
+data/

@@ -1,0 +1,8 @@
+{
+  "functionDirectory": "bin/output",
+  "functions": [
+    "SaveContact",
+    "ProcessContact",
+    "CleanupStaleContacts"
+  ]
+}
