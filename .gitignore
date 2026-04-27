@@ -24,7 +24,6 @@ AzuriteConfig
 # Environment
 .env
 .env.*.local
-.env.ps1
 
 # Node
 node_modules/
